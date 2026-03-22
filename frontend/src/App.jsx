@@ -21,6 +21,7 @@ import GenerateQr from './components/GenerateQr'
 import { Toaster } from 'react-hot-toast'
 import PrivateRoute from './components/PrivateRoute'
 import PublicRoute from './components/PublicRoute'
+import CreatePin from './pages/CreatePin'
 
 const App = () => {
   return (
@@ -41,8 +42,8 @@ const App = () => {
         <Route path='/profile' element={<PrivateRoute><Profile /></PrivateRoute>} />
         <Route path='/all-bank' element={<PrivateRoute><AllBank /></PrivateRoute>} />
         <Route path='/pay-mobile' element={<PrivateRoute><PayMobileNumber /></PrivateRoute>} />
-        <Route path="/chat-pay-screen/:id" element={<PrivateRoute><ChatPayScreen /></PrivateRoute>} />
-        <Route path="/upi-pin/:id" element={<PrivateRoute><UpiPinScreen /></PrivateRoute>} />
+        <Route path="/chat-pay-screen/:receiverNumber" element={<PrivateRoute><ChatPayScreen /></PrivateRoute>} />
+        <Route path="/upi-pin/:receiverNumber" element={<PrivateRoute><UpiPinScreen /></PrivateRoute>} />
         <Route path="/payment-processing" element={<PrivateRoute><PaymentProcessingScreen /></PrivateRoute>} />
         <Route path="/payment-success" element={<PrivateRoute><PaymentSuccessScreen /></PrivateRoute>} />
         <Route path="/bank-transfer" element={<PrivateRoute><BankTransfer /></PrivateRoute>} />
@@ -54,7 +55,7 @@ const App = () => {
         <Route path="/scan" element={<PrivateRoute><ScanQrScreen /></PrivateRoute>} />
         <Route path="/scan-pay" element={<PrivateRoute><ScanPayScreen /></PrivateRoute>} />
         <Route path="/generate-qr" element={<PrivateRoute><GenerateQr /></PrivateRoute>} />
-
+        <Route path="/create-pin" element={<PrivateRoute><CreatePin/></PrivateRoute>} />
       </Routes>
     </div>
   )

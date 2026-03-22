@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { User } from 'lucide-react';
 import { MdVerifiedUser } from "react-icons/md";
 import { GoArrowLeft } from "react-icons/go";
@@ -6,6 +6,7 @@ import pnb_logo from "../assets/images/pnb.png"
 import barcode_img from "../assets/images/barcode.png"
 import { BsBank2 } from "react-icons/bs";
 import { NavLink } from 'react-router-dom';
+import { AppContext } from '../contexts/AppContext';
 
 const Profile = () => {
     const bankDetails = {
@@ -15,6 +16,7 @@ const Profile = () => {
         "upi_id": "76231575@huahb",
         "barcode_img": barcode_img,
     }
+    const {user} = useContext(AppContext)
   return (
     <div className='w-full bg-black min-h-screen pb-10 text-white'>
       <div className="absolute -top-90 w-full h-[500px] inset-0 bg-gradient-to-t from-teal-800 to-black blur-3xl"></div>
@@ -26,10 +28,10 @@ const Profile = () => {
         <div className='mt-6 flex items-center justify-center flex-col'>
             <div className='bg-teal-500 text-neutral-100 rounded-full w-20 h-20 flex items-center justify-center'><User size={40} /></div>
             <span className='flex relative gap-1 items-center font-medium text-[20px]'>
-                <p>Soumen Das</p>
+                <p>{user?.linkedAccounts[0].name}</p>
                 <MdVerifiedUser className='text-teal-400 absolute -right-6' />
             </span>
-            <p className='text-[15px] font-medium text-neutral-500'>+91-130293763</p>
+            <p className='text-[15px] font-medium text-neutral-500'>+91-{user?.mobileNumber}</p>
         </div>
       </div>
     <div className='px-3 mt-5'>
@@ -37,8 +39,8 @@ const Profile = () => {
             <div className='flex cursor-pointer items-center gap-3'>
                 <img src={bankDetails.logo} alt="" className='w-16 rounded-lg' />
                 <div>
-                    <p className='text-[15px] font-medium'>{bankDetails.name}</p>
-                    <p className='text-[12px] font-medium'>UPI ID: {bankDetails.upi_id}</p>
+                    <p className='text-[15px] font-medium'>{user?.linkedAccounts[0].bankName}</p>
+                    <p className='text-[12px] font-medium'>UPI ID: {user?.linkedAccounts[0].upiId}</p>
                 </div> 
             </div>
             <div className='mt-6 flex items-center justify-center'>

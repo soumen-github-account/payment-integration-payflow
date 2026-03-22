@@ -1,11 +1,52 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { bank_data } from '../assets/bank_data'
+import axios from 'axios';
+import { AppContext } from '../contexts/AppContext';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const AllBank = () => {
+    const {user, backendUrl} = useContext(AppContext)
     const [search, setSearch] = useState('')
-
+    const [checkingLoading, setCheckingLoading] = useState(false);
+    const navigate = useNavigate();
     const filteredBanks = bank_data.filter((bank)=> bank.bankName.toLowerCase().includes(search.toLowerCase()))
     
+    const checkBank = async(bankName) => {
+      setCheckingLoading(true)
+      try {
+        const {data} = await axios.post(`${backendUrl}/api/upi/search-by-mobile`, 
+          {
+            mobileNumber: user.mobileNumber,
+            bankName: bankName 
+          }
+        );
+        console.log("Search Response : ", data);
+        if(!data.registered){
+          toast.error(data.message)
+          return;
+        }
+
+        if (!data.hasUpi) {
+          await axios.post(
+            `${backendUrl}/api/upi/create-profile?mobile=${user.mobileNumber}`
+          );
+
+          toast.success("UPI Created");
+          navigate("/create-pin");
+          return;
+        }
+
+        if (!data.hasPin) {
+          navigate("/create-pin");
+          return;
+        }
+
+      } catch (error) {
+        console.log(error)
+        setCheckingLoading(false)
+      }
+    }
 
   return (
     <div className='bg-black text-white relative w-full min-h-screen'>
@@ -16,7 +57,7 @@ const AllBank = () => {
             type="text"
             value={search}
             onChange={(e)=>setSearch(e.target.value)}
-            placeholder="Mobile number"
+            placeholder="Bank Name"
             className="w-full text-white h-12 rounded-full bg-gray-500 border border-gray-700 px-4 outline-none focus:border-teal-500"
             />
         </div>
@@ -29,6 +70,7 @@ const AllBank = () => {
             filteredBanks.map((bank, index) => (
               <div
                 key={index}
+                onClick={() => checkBank(bank.bankName)}
                 className='flex items-center gap-3 p-3 rounded-lg border border-teal-700 bg-gradient-to-t from-teal-950 to-black cursor-pointer transition-all duration-300'
               >
                 <img

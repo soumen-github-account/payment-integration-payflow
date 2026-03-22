@@ -1,14 +1,20 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { GoArrowLeft } from "react-icons/go";
 import { NavLink, useNavigate } from "react-router-dom";
 import { transaction_data } from "../assets/transaction_data";
 import { getTransactionType } from "../utils/transactionType";
 import { user_data } from "../assets/user_data";
+import { AppContext } from "../contexts/AppContext";
+import TransactionSkeleton from "../components/TransactionSkeleton";
 
 const TransactionHistory = () => {
+  const {getAllTransactions, transactions, user, getTransactionsLoading} = useContext(AppContext)
   const navigate = useNavigate();
-  const currentUser = user_data;
-
+  const currentUser = user;
+  useEffect(()=>{
+    getAllTransactions()
+  }, [])
+  if(getTransactionsLoading) return <TransactionSkeleton />
   return (
     <div className="min-h-screen w-full bg-black text-white p-4">
       <nav className="flex items-center mb-6 gap-3">
@@ -19,8 +25,8 @@ const TransactionHistory = () => {
       </nav>
 
       <div className="flex flex-col gap-3">
-        {transaction_data.map((txn) => {
-          const type = getTransactionType(txn, currentUser);
+        {transactions.length > 0 && transactions.map((txn) => {
+          const type = getTransactionType(txn, currentUser)
 
           return (
             <div

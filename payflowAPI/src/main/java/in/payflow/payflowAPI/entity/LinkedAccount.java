@@ -3,6 +3,7 @@ package in.payflow.payflowAPI.entity;
 public class LinkedAccount{
 	private String accountId;
     private String name;
+    private String bankName;
     private String accountNumber;
     private String ifscCode;
     private String mobileNumber;
@@ -63,6 +64,12 @@ public class LinkedAccount{
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	public String getBankName() {
+		return bankName;
+	}
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
 	}
 	
 	

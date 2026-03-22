@@ -7,53 +7,107 @@ const BankProcessingScreen = () => {
   const { state } = useLocation();
   const [error, setError] = useState("");
 
+  // useEffect(() => {
+  //   if (!state) {
+  //     navigate("/", { replace: true });
+  //     return;
+  //   }
+
+  //   const { accountno, ifsc } = state;
+
+  //   // simulate bank verification delay
+  //   const timer = setTimeout(() => {
+  //     let foundAccount = null;
+  //     let foundBank = null;
+
+  //     bank_data.forEach(bank => {
+  //       bank.accounts.forEach(acc => {
+  //         if (
+  //           acc.accountNumber === accountno &&
+  //           acc.ifscCode.toUpperCase() === ifsc.toUpperCase()
+  //         ) {
+  //           foundAccount = acc;
+  //           foundBank = bank;
+  //         }
+  //       });
+  //     });
+
+  //     if (!foundAccount) {
+  //       setError("Account not found. Please check details.");
+  //       return;
+  //     }
+
+  //     if (foundAccount.status !== "ACTIVE") {
+  //       setError("This account is inactive.");
+  //       return;
+  //     }
+
+  //     // VERIFIED → go to confirm page
+  //     navigate("/bank-confirm", {
+  //       replace: true,
+  //       state: {
+  //         account: foundAccount,
+  //         bank: foundBank
+  //       }
+  //     });
+  //   }, 2000);
+
+  //   return () => clearTimeout(timer);
+  // }, [state, navigate]);
+
   useEffect(() => {
-    if (!state) {
-      navigate("/", { replace: true });
-      return;
-    }
+  if (!state) {
+    navigate("/", { replace: true });
+    return;
+  }
 
-    const { accountno, ifsc } = state;
+  const verifyAccount = async () => {
+    try {
+      const { accountno, ifsc } = state;
 
-    // ⏳ simulate bank verification delay
-    const timer = setTimeout(() => {
-      let foundAccount = null;
-      let foundBank = null;
-
-      bank_data.forEach(bank => {
-        bank.accounts.forEach(acc => {
-          if (
-            acc.accountNumber === accountno &&
-            acc.ifscCode.toUpperCase() === ifsc.toUpperCase()
-          ) {
-            foundAccount = acc;
-            foundBank = bank;
-          }
-        });
+      const res = await fetch("http://localhost:8080/api/account/verify-account", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          accountNumber: accountno,
+          ifscCode: ifsc
+        })
       });
 
-      if (!foundAccount) {
-        setError("Account not found. Please check details.");
+      const data = await res.json(); // assuming you return JSON
+
+      console.log("API response:", data);
+
+      // ❌ If backend returns string (error)
+      if (typeof data === "string") {
+        setError(data);
         return;
       }
 
-      if (foundAccount.status !== "ACTIVE") {
+      // ❌ Optional: check account status
+      if (data.status && data.status !== "ACTIVE") {
         setError("This account is inactive.");
         return;
       }
 
-      // ✅ VERIFIED → go to confirm page
+      // ✅ SUCCESS
       navigate("/bank-confirm", {
         replace: true,
         state: {
-          account: foundAccount,
-          bank: foundBank
+          account: data
         }
       });
-    }, 2000);
 
-    return () => clearTimeout(timer);
-  }, [state, navigate]);
+    } catch (err) {
+      console.error(err);
+      setError("Server error. Please try again.");
+    }
+  };
+
+  verifyAccount();
+}, [state, navigate]);
 
   if (!state) return null;
 

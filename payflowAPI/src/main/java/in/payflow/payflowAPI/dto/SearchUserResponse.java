@@ -4,6 +4,7 @@ public class SearchUserResponse {
 	private boolean success;
     private boolean registered;
     private boolean hasUpi;
+    private boolean hasPin;
     private String name;
     private String upiId;
     private String message;
@@ -76,6 +77,14 @@ public class SearchUserResponse {
 
 	public void setMobileNumber(String mobileNumber) {
 		this.mobileNumber = mobileNumber;
+	}
+
+	public boolean isHasPin() {
+		return hasPin;
+	}
+
+	public void setHasPin(boolean hasPin) {
+		this.hasPin = hasPin;
 	}
     
     

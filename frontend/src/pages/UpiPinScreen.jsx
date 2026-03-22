@@ -119,12 +119,14 @@
 // export default UpiPinScreen;
 
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { GoArrowLeft } from "react-icons/go";
 import { FiDelete } from "react-icons/fi";
+import toast from "react-hot-toast";
 
 const UpiPinScreen = () => {
   const navigate = useNavigate();
+  const { receiverNumber } = useParams();
   const location = useLocation();
 
   const [pin, setPin] = useState("");
@@ -142,34 +144,31 @@ const UpiPinScreen = () => {
   // Stop rendering until redirect happens
   if (!state) return null;
 
-  const { amount, contact } = state;
+  const { amount, contact, transferType } = state;
 
   // MOCK LOGGED-IN USER ACCOUNT
-  const userAccount = {
-    upiPin: "1234",
-    bankName: "HDFC Bank",
-    upiId: "rahul@okhdfc"
-  };
+  // const userAccount = {
+  //   upiPin: "123456",
+  //   bankName: "HDFC Bank",
+  //   upiId: "rahul@okhdfc"
+  // };
 
   const handleNumberClick = (num) => {
-    if (pin.length < 4) setPin(prev => prev + num);
+    if (pin.length < 6) setPin(prev => prev + num);
   };
 
   const handleDelete = () => {
     setPin(prev => prev.slice(0, -1));
   };
 
-const verifyPin = () => {
-    if (pin === userAccount.upiPin) {
-        navigate("/payment-processing", {
-        replace: true,
-        state: { amount, contact }
-        });
-    } else {
-        setError("Incorrect UPI PIN");
-        setPin("");
-    }
-};
+  console.log(state)
+
+  const verifyPin = () => {
+    navigate("/payment-processing", {
+    replace: true,
+    state: { amount, contact, pin, transferType }
+    });
+  };
 
   return (
     <div className="min-h-screen w-full bg-black text-white flex flex-col">
@@ -188,12 +187,12 @@ const verifyPin = () => {
         <p className="text-gray-400 text-sm">Paying</p>
         <p className="text-lg font-medium">{contact.name}</p>
         <p className="text-2xl font-semibold mt-2">₹{amount}</p>
-        <p className="text-xs text-gray-500 mt-1">{userAccount.bankName}</p>
+        <p className="text-xs text-gray-500 mt-1">{contact.bankName}</p>
       </div>
 
       {/* PIN DOTS */}
       <div className="flex justify-center gap-4 mt-10">
-        {[0, 1, 2, 3].map(i => (
+        {[0, 1, 2, 3, 4, 5].map(i => (
           <div
             key={i}
             className={`w-4 h-4 rounded-full border
@@ -218,7 +217,7 @@ const verifyPin = () => {
           </button>
         ))}
 
-        {pin.length === 4 ? (
+        {pin.length === 6 ? (
           <button
             onClick={verifyPin}
             className="py-3 rounded-full bg-teal-600 font-medium"

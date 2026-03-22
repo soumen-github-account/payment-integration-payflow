@@ -59,17 +59,18 @@ public class UpiService {
 
         mongoTemplate.updateFirst(query, update, Bank.class);
         
-        LinkedAccount linkedAccount = buildLinkedAccount(account, upiId);
+        LinkedAccount linkedAccount = buildLinkedAccount(account, upiId, bank);
 
-        // 7️⃣ Push LinkedAccount into User
+        // Push LinkedAccount into User
         addLinkedAccountToUser(mobileNumber, linkedAccount);
     }
     
-    private LinkedAccount buildLinkedAccount(Account account, String upiId) {
+    private LinkedAccount buildLinkedAccount(Account account, String upiId, Bank bank) {
 
         LinkedAccount linkedAccount = new LinkedAccount();
         linkedAccount.setAccountId(account.getAccountId());
         linkedAccount.setName(account.getName());
+        linkedAccount.setBankName(bank.getBankName());
         linkedAccount.setAccountNumber(account.getAccountNumber());
         linkedAccount.setIfscCode(account.getIfscCode());
         linkedAccount.setMobileNumber(account.getMobileNumber());
@@ -98,61 +99,108 @@ public class UpiService {
                 + random + "@" + handle;
     }
     
-    public SearchUserResponse searchUserByMobile(String mobileNumber) {
+//    public SearchUserResponse searchUserByMobile(String mobileNumber) {
+//
+//	    Query query = new Query(
+//	            Criteria.where("accounts.mobileNumber").is(mobileNumber)
+//	    );
+//	
+//	    Bank bank = mongoTemplate.findOne(query, Bank.class);
+//	
+//	    if (bank == null) {
+//	        SearchUserResponse response = new SearchUserResponse(true);
+//	        response.setRegistered(false);
+//	        response.setMessage("User not found");
+//	        return response;
+//	    }
+//	
+//	    // Get matched account
+//	    Account account = bank.getAccounts().stream()
+//	            .filter(a -> mobileNumber.equals(a.getMobileNumber()))
+//	            .findFirst()
+//	            .orElse(null);
+//	
+//	    if (account == null) {
+//	        SearchUserResponse response = new SearchUserResponse(true);
+//	        response.setRegistered(false);
+//	        response.setMessage("Account not found");
+//	        return response;
+//	    }
+//	
+//	    // Check UPI profiles
+//	    if (account.getUpiProfiles() == null || account.getUpiProfiles().isEmpty()) {
+//	        SearchUserResponse response = new SearchUserResponse(true);
+//	        response.setRegistered(true);
+//	        response.setHasUpi(false);
+//	        response.setMessage("No UPI profile linked");
+//	        return response;
+//	    }
+//	
+//	    // Take first active UPI
+//	    UpiProfile profile = account.getUpiProfiles().stream()
+//	            .filter(UpiProfile::isActive)
+//	            .findFirst()
+//	            .orElse(account.getUpiProfiles().get(0));
+//	
+//	    // Build response
+//	    SearchUserResponse response = new SearchUserResponse(true);
+//	    response.setRegistered(true);
+//	    response.setHasUpi(true);
+//	    response.setName(account.getName());
+//	    response.setMobileNumber(account.getMobileNumber());
+//	    response.setUpiId(profile.getUpiId());
+//	    response.setBankName(bank.getBankName());
+//	
+//	    return response;
+//	}
+    public SearchUserResponse searchUserByMobile(String mobileNumber, String bankName) {
 
-	    Query query = new Query(
-	            Criteria.where("accounts.mobileNumber").is(mobileNumber)
-	    );
-	
-	    Bank bank = mongoTemplate.findOne(query, Bank.class);
-	
-	    if (bank == null) {
-	        SearchUserResponse response = new SearchUserResponse(true);
-	        response.setRegistered(false);
-	        response.setMessage("User not found");
-	        return response;
-	    }
-	
-	    // Get matched account
-	    Account account = bank.getAccounts().stream()
-	            .filter(a -> mobileNumber.equals(a.getMobileNumber()))
-	            .findFirst()
-	            .orElse(null);
-	
-	    if (account == null) {
-	        SearchUserResponse response = new SearchUserResponse(true);
-	        response.setRegistered(false);
-	        response.setMessage("Account not found");
-	        return response;
-	    }
-	
-	    // Check UPI profiles
-	    if (account.getUpiProfiles() == null || account.getUpiProfiles().isEmpty()) {
-	        SearchUserResponse response = new SearchUserResponse(true);
-	        response.setRegistered(true);
-	        response.setHasUpi(false);
-	        response.setMessage("No UPI profile linked");
-	        return response;
-	    }
-	
-	    // Take first active UPI
-	    UpiProfile profile = account.getUpiProfiles().stream()
-	            .filter(UpiProfile::isActive)
-	            .findFirst()
-	            .orElse(account.getUpiProfiles().get(0));
-	
-	    // Build response
-	    SearchUserResponse response = new SearchUserResponse(true);
-	    response.setRegistered(true);
-	    response.setHasUpi(true);
-	    response.setName(account.getName());
-	    response.setMobileNumber(account.getMobileNumber());
-	    response.setUpiId(profile.getUpiId());
-	    response.setBankName(bank.getBankName());
-	
-	    return response;
-	}
+        Query query = new Query(
+                Criteria.where("bankName").is(bankName)
+                        .and("accounts")
+                        .elemMatch(Criteria.where("mobileNumber").is(mobileNumber))
+        );
 
+        Bank bank = mongoTemplate.findOne(query, Bank.class);
+
+        // No account in THIS bank
+        if (bank == null) {
+            SearchUserResponse response = new SearchUserResponse(true);
+            response.setRegistered(false);
+            response.setMessage("No account found in selected bank");
+            return response;
+        }
+
+        Account account = bank.getAccounts().stream()
+                .filter(a -> mobileNumber.equals(a.getMobileNumber()))
+                .findFirst()
+                .orElse(null);
+
+        if (account == null) {
+            SearchUserResponse response = new SearchUserResponse(true);
+            response.setRegistered(false);
+            return response;
+        }
+
+        SearchUserResponse response = new SearchUserResponse(true);
+        response.setRegistered(true);
+        response.setHasUpi(account.getUpiProfiles() != null && !account.getUpiProfiles().isEmpty());
+        response.setHasPin(account.getUpiPin() != null);
+        response.setName(account.getName());
+        response.setMobileNumber(account.getMobileNumber());
+        response.setBankName(bank.getBankName());
+
+        if (response.isHasUpi()) {
+            UpiProfile profile = account.getUpiProfiles().stream()
+                    .filter(UpiProfile::isActive)
+                    .findFirst()
+                    .orElse(account.getUpiProfiles().get(0));
+
+            response.setUpiId(profile.getUpiId());
+        }
+
+        return response;
+    }
     public SearchAccountResponse seachUserByAccount(String accountNo, String ifscCode) {
     	Query query = new Query(
     			Criteria.where("accounts.accountNumber").is(accountNo)
@@ -192,7 +240,5 @@ public class UpiService {
     	
     	return response;
     }
-    
-    
     
 }

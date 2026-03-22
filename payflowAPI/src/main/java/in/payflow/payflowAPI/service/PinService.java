@@ -19,8 +19,8 @@ public class PinService {
 
     public ApiResponse createUpiPin(String mobileNumber, String pin) {
     	// Validate PIN length (basic validation)
-        if (pin == null || pin.length() != 4) {
-            return new ApiResponse(false, "UPI PIN must be 4 digits");
+        if (pin == null || pin.length() != 6) {
+            return new ApiResponse(false, "UPI PIN must be 6 digits");
         }
 
         Query query = new Query(

@@ -1,42 +1,58 @@
 
 
-
-
 export const contact_users = [
-//   {
-//     contactId: "CNT001",
-//     name: "Rahul Sharma",
-//     mobileNumber: "9876543210",
-//     avatar: "https://ui-avatars.com/api/?name=Rahul+Sharma",
-//   },
   {
-    contactId: "CNT002",
+    contactId: "CNT001",
     name: "Anita Verma",
     mobileNumber: "9123456789",
-    avatar: "https://ui-avatars.com/api/?name=Anita+Verma"
+    avatar: "https://ui-avatars.com/api/?name=Ankit+Verma",
   },
   {
-    contactId: "CNT003",
-    name: "Vikram Singh",
-    mobileNumber: "9988776655",
-    avatar: "https://ui-avatars.com/api/?name=Vikram+Singh",
+    contactId: "CNT008",
+    name: "Ankit Verma",
+    mobileNumber: "9988776659",
+    avatar: "https://ui-avatars.com/api/?name=Ankit+Verma",
   },
   {
-    contactId: "CNT004",
-    name: "Neha Kapoor",
-    mobileNumber: "9090909090",
-    avatar: "https://ui-avatars.com/api/?name=Neha+Kapoor",
+    contactId: "CNT009",
+    name: "Neha Gupta",
+    mobileNumber: "9090909070",
+    avatar: "https://ui-avatars.com/api/?name=Neha+Gupta",
   },
   {
-    contactId: "CNT005",
-    name: "Amit Kumar",
-    mobileNumber: "9812345678",
-    avatar: "https://ui-avatars.com/api/?name=Amit+Kumar",
+    contactId: "CNT010",
+    name: "Suresh Yadav",
+    mobileNumber: "9345678123",
+    avatar: "https://ui-avatars.com/api/?name=Suresh+Yadav",
   },
   {
-    contactId: "CNT006",
-    name: "Pooja Mehta",
-    mobileNumber: "9898989898",
-    avatar: "https://ui-avatars.com/api/?name=Pooja+Mehta",
-  }
+    contactId: "CNT011",
+    name: "Pooja Mishra",
+    mobileNumber: "9765432189",
+    avatar: "https://ui-avatars.com/api/?name=Pooja+Mishra",
+  },
+  {
+    contactId: "CNT012",
+    name: "Vikas Patel",
+    mobileNumber: "9012345678",
+    avatar: "https://ui-avatars.com/api/?name=Vikas+Patel",
+  },
+  {
+    contactId: "CNT013",
+    name: "Sumana Roy",
+    mobileNumber: "8899776655",
+    avatar: "https://ui-avatars.com/api/?name=Sneha+Roy",
+  },
+  {
+    contactId: "CNT014",
+    name: "Arjun Das",
+    mobileNumber: "9785612340",
+    avatar: "https://ui-avatars.com/api/?name=Arjun+Das",
+  },
+  {
+    contactId: "CNT015",
+    name: "Kavita Jain",
+    mobileNumber: "9654321789",
+    avatar: "https://ui-avatars.com/api/?name=Kavita+Jain",
+  },
 ];

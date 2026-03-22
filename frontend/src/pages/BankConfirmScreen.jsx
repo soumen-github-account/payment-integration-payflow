@@ -8,27 +8,33 @@ const BankConfirmScreen = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [amount, setAmount] = useState("");
-    const id = user_data.id
+  const id = user_data.id
   useEffect(() => {
     if (!state) navigate("/", { replace: true });
   }, [state, navigate]);
 
   if (!state) return null;
 
-  const { account, bank } = state;
+  const { account } = state;
+  const bankName = account.bankName
   const handlePay = () => {
-        if (!amount || amount <= 0) return;
+  if (!amount || amount <= 0) return;
 
-        navigate(`/upi-pin/${id}`, {
-              state: {
-                amount,
-                contact: {
-                  name: account.name,
-                  mobileNumber: account.mobileNumber
-                }
-              }
-            })
+  navigate(`/upi-pin/${account.accountNumber}`, {
+        state: {
+          amount,
+          contact: {
+            name: account.holderName,
+            // mobileNumber: account.mobileNumber
+            bankName: account.bankName,
+            accountNumber: account.accountNumber,
+            ifscCode: account.ifscCode
+          },
+          transferType: "BANK"
+        }
+      })
     };
+    
   return (
     <div className="min-h-screen w-full bg-black text-white flex flex-col">
       <nav className="p-4 flex gap-3 border-b border-gray-800">
@@ -42,12 +48,12 @@ const BankConfirmScreen = () => {
       <div className="p-4 space-y-4">
         <div className="bg-[#121212] rounded-2xl p-4 border border-gray-800">
           <div className="flex items-center gap-3 mb-3">
-            <img src={bank.logo} alt={bank.bankName} className="w-10 h-10" />
-            <p className="font-medium">{bank.bankName}</p>
+            {/* <img src={bank.logo ? "" : ""} alt={bank.bankName} className="w-10 h-10" /> */}
+            <p className="font-medium">{bankName}</p>
           </div>
 
           <p className="text-gray-400 text-sm">Account Holder</p>
-          <p className="text-lg font-medium">{account.name}</p>
+          <p className="text-lg font-medium">{account.holderName}</p>
 
           <p className="text-gray-400 text-sm mt-3">Account Number</p>
           <p>XXXX XXXX {account.accountNumber.slice(-4)}</p>

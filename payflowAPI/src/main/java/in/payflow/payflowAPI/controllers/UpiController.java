@@ -16,6 +16,7 @@ import in.payflow.payflowAPI.service.UpiService;
 
 @RestController
 @RequestMapping("/api/upi")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials="true")
 public class UpiController {
 
     @Autowired
@@ -61,7 +62,7 @@ public class UpiController {
             @RequestBody SearchUserRequest request) {
 
         SearchUserResponse response =
-                upiService.searchUserByMobile(request.getMobileNumber());
+                upiService.searchUserByMobile(request.getMobileNumber(), request.getBankName());
 
         return ResponseEntity.ok(response);
     }
@@ -72,5 +73,6 @@ public class UpiController {
     	
     	return ResponseEntity.ok(response);
     }
-
+    
+    
 }

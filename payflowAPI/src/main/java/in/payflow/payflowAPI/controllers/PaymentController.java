@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import in.payflow.payflowAPI.dto.BalanceCheckRequest;
+import in.payflow.payflowAPI.dto.BalanceResponse;
 import in.payflow.payflowAPI.dto.TransferRequest;
 import in.payflow.payflowAPI.service.PaymentService;
 
@@ -27,10 +28,11 @@ public class PaymentController {
 	@PostMapping("/balance")
 	public ResponseEntity<?> getBalance(@RequestBody BalanceCheckRequest request) {
 	    try {
-	        Double balance = paymentService.checkBalance(request);
-	        return ResponseEntity.ok(balance);
+	        BalanceResponse response = paymentService.checkBalance(request);
+	        return ResponseEntity.ok(response);
 	    } catch (Exception e) {
 	        return ResponseEntity.badRequest().body(e.getMessage());
 	    }
 	}
+	
 }

@@ -3,6 +3,7 @@ package in.payflow.payflowAPI.service;
 import org.springframework.stereotype.Service;
 
 import in.payflow.payflowAPI.dto.BalanceCheckRequest;
+import in.payflow.payflowAPI.dto.BalanceResponse;
 import in.payflow.payflowAPI.dto.TransferRequest;
 import in.payflow.payflowAPI.entity.Account;
 import in.payflow.payflowAPI.entity.Bank;
@@ -15,6 +16,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 @Service
@@ -24,6 +26,9 @@ public class PaymentService {
 	
 	@Autowired
     private TransactionRepository transactionRepository;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	public String transferMoney(TransferRequest request) {
 		Account sender = null;
@@ -44,8 +49,8 @@ public class PaymentService {
 			return "Sender Not found";
 		}
 		
-		if(!sender.getUpiPin().equals(request.getPin())) {
-			return "invalid PIN";
+		if(!passwordEncoder.matches(request.getPin(), sender.getUpiPin())) {
+		    return "Invalid PIN";
 		}
 		
 		if(sender.getBalance() < request.getAmount()) {
@@ -69,6 +74,9 @@ public class PaymentService {
 				}
 			}
 		}
+		System.out.println("Transfer Type: " + request.getTransferType());
+		System.out.println("Receiver Acc No: " + request.getReceiverAccountNumber());
+		System.out.println("Receiver IFSC: " + request.getReceiverIfsc());
 		
 		if(receiver == null) {
 			return "Receiver not found";
@@ -91,13 +99,15 @@ public class PaymentService {
 		Party senderParty = new Party();
         senderParty.setName(sender.getName());
         senderParty.setAccountNumber(sender.getAccountNumber());
-
+        senderParty.setMobileNumber(sender.getMobileNumber());
+        
         Party receiverParty = new Party();
         receiverParty.setName(receiver.getName());
         receiverParty.setAccountNumber(receiver.getAccountNumber());
-
-		txn.setSender(senderParty);
-		txn.setReceiver(senderParty);
+        receiverParty.setMobileNumber(receiver.getMobileNumber());
+        
+        txn.setSender(senderParty);
+        txn.setReceiver(receiverParty);
 		
 		transactionRepository.save(txn);
 		
@@ -105,13 +115,15 @@ public class PaymentService {
 		
 	}
 	
-	public Double checkBalance(BalanceCheckRequest request) {
+	public BalanceResponse checkBalance(BalanceCheckRequest request) {
 		Account userAccount = null;
-		
+		String bankName = null;
+
 		for(Bank bank : bankRepository.findAll()) {
 			for(Account acc : bank.getAccounts()) {
 				if(acc.getMobileNumber().equals(request.getMobileNumber())) {
 					userAccount = acc;
+					bankName = bank.getBankName();
 					break;
 				}
 			}
@@ -121,10 +133,13 @@ public class PaymentService {
 			throw new RuntimeException("Account not found");
 		}
 		
-		if (!userAccount.getUpiPin().equals(request.getPin())) {
-	        throw new RuntimeException("Invalid PIN");
-	    }
+//		if (!userAccount.getUpiPin().equals(request.getPin())) {
+//	        throw new RuntimeException("Invalid PIN");
+//	    }
+		if(!passwordEncoder.matches(request.getPin(), userAccount.getUpiPin())) {
+		    throw new RuntimeException("Invalid PIN");
+		}
 		
-		return userAccount.getBalance();
+		 return new BalanceResponse(bankName, userAccount.getBalance());
 	}
 }
