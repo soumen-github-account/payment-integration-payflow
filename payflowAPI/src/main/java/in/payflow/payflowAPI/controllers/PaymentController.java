@@ -2,6 +2,7 @@ package in.payflow.payflowAPI.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import in.payflow.payflowAPI.service.PaymentService;
 
 @RestController
 @RequestMapping("/api/payment")
+@CrossOrigin(origins = "https://payment-integration-payflow.vercel.app", allowCredentials="true")
 public class PaymentController {
 
 	@Autowired

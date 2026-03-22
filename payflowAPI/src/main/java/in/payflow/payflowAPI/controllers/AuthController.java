@@ -10,7 +10,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials="true")
+@CrossOrigin(origins = "https://payment-integration-payflow.vercel.app", allowCredentials="true")
 public class AuthController {
 
     private final AuthService authService;
@@ -34,10 +34,10 @@ public class AuthController {
         
         ResponseCookie cookie = ResponseCookie.from("token", token)
         						.httpOnly(true)
-        						.secure(false)
+        						.secure(true)
         						.path("/")
         						.maxAge(60 * 60 * 24)
-        						.sameSite("Lax")
+        						.sameSite("None")
         						.build();
         
         return ResponseEntity.ok()

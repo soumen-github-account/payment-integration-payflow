@@ -16,7 +16,7 @@ import in.payflow.payflowAPI.service.UpiService;
 
 @RestController
 @RequestMapping("/api/upi")
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials="true")
+@CrossOrigin(origins = "https://payment-integration-payflow.vercel.app", allowCredentials="true")
 public class UpiController {
 
     @Autowired

@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials="true")
+@CrossOrigin(origins = "https://payment-integration-payflow.vercel.app", allowCredentials="true")
 public class UserController {
 
     private final JwtUtil jwtUtil;
