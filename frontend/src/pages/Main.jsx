@@ -7,6 +7,9 @@ import PeopleKnow from '../components/PeopleKnow';
 import Footer from '../components/Footer';
 import { NavLink } from 'react-router-dom';
 import MobileNavbar from '../components/MobileNavbar';
+import { registerSW } from 'virtual:pwa-register'
+
+registerSW({ immediate: true })
 
 const Main = () => {
   return (
