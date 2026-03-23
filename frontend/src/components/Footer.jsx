@@ -3,19 +3,27 @@ import React, { useEffect, useState } from 'react'
 
 const Footer = () => {
     const [deferredPrompt, setDeferredPrompt] = useState(null);
+    const [showInstall, setShowInstall] = useState(false);
+
     useEffect(() => {
-        window.addEventListener("beforeinstallprompt", (e) => {
-        e.preventDefault();
-        setDeferredPrompt(e);
-        });
+        const handler = (e) => {
+            e.preventDefault();
+            setDeferredPrompt(e);
+            setShowInstall(true);
+        };
+
+        window.addEventListener("beforeinstallprompt", handler);
+
+        return () => window.removeEventListener("beforeinstallprompt", handler);
     }, []);
 
     const installApp = async () => {
-        if (deferredPrompt) {
+        if (!deferredPrompt) return;
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
         console.log(outcome);
-        }
+        setDeferredPrompt(null);
+        setShowInstall(false);
     };
     return (
         <footer className="px-6 bg-neutral-900 pt-8 md:px-16 lg:px-36 w-full text-gray-300">
@@ -26,7 +34,7 @@ const Footer = () => {
                         Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
                     </p>
                     <div className="flex items-center gap-2 mt-4">
-                        <button onClick={installApp} className='cursor-pointer'><img src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/refs/heads/main/assets/appDownload/googlePlayBtnBlack.svg" alt="google play" className="h-10 w-auto border border-white rounded" /></button>
+                        {showInstall && (<button onClick={installApp} className='cursor-pointer'><img src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/refs/heads/main/assets/appDownload/googlePlayBtnBlack.svg" alt="google play" className="h-10 w-auto border border-white rounded" /></button>)}
                         <img src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/refs/heads/main/assets/appDownload/appleStoreBtnBlack.svg" alt="app store" className="h-10 w-auto border border-white rounded" />
                     </div>
                 </div>
