@@ -33,7 +33,7 @@ import in.payflow.payflowAPI.service.TransactionService;
 
 @RestController
 @RequestMapping("/api/account")
-@CrossOrigin(origins = "https://payment-integration-payflow.vercel.app", allowCredentials="true")
+@CrossOrigin(origins = {"https://payment-integration-payflow.vercel.app", "http://localhost:5173"}, allowCredentials="true")
 public class AccountController {
 	private final TransactionService transactionService;
     private final MongoTemplate mongoTemplate;

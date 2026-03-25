@@ -88,6 +88,7 @@ import { GoArrowLeft } from "react-icons/go";
 import { NavLink } from "react-router-dom";
 import axios from "axios";
 import { AppContext } from "../contexts/AppContext";
+import MobileNavbar from "../components/MobileNavbar";
 
 const CheckBalance = () => {
   const { backendUrl, user } = useContext(AppContext);
@@ -113,7 +114,7 @@ const CheckBalance = () => {
 
       console.log(data);
 
-      // ✅ CORRECT DATA
+      // CORRECT DATA
       setBankName(data.bankName);
       setBalance(data.balance);
 
@@ -135,7 +136,7 @@ const CheckBalance = () => {
         <h1 className="text-lg font-medium">Check Balance</h1>
       </nav>
 
-      {/* 🔥 LOADING SCREEN */}
+      {/* LOADING SCREEN */}
       {loading ? (
         <div className="flex flex-col items-center justify-center mt-20">
           <div className="w-14 h-14 border-4 border-gray-700 border-t-teal-500 rounded-full animate-spin"></div>
@@ -164,7 +165,7 @@ const CheckBalance = () => {
           </button>
         </>
       ) : (
-        /* ✅ RESULT SCREEN */
+        /*  RESULT SCREEN */
         <div className="text-center mt-10">
           <p className="text-gray-400">{bankName}</p>
 
@@ -181,6 +182,7 @@ const CheckBalance = () => {
           </NavLink>
         </div>
       )}
+      <MobileNavbar />
     </div>
   );
 };

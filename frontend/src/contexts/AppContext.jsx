@@ -21,7 +21,7 @@ export const AppContextProvider = (props) =>{
         try {
             const {data} = await axios.get(`${backendUrl}/api/user/profile`);
             setIsLoggedIn(true);
-            console.log(data)
+            // console.log(data)
             setUser(data)
         } catch (error) {
             setIsLoggedIn(false);
@@ -44,7 +44,7 @@ export const AppContextProvider = (props) =>{
                     }
                 }
             )
-            console.log(data)
+            // console.log(data)
             setChatData(data);
             setChatScreenLoading(false)
         } catch (error) {

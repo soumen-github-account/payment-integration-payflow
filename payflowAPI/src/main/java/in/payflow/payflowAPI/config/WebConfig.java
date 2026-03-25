@@ -15,7 +15,7 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://payment-integration-payflow.vercel.app")
+                        .allowedOrigins("https://payment-integration-payflow.vercel.app", "http://localhost:5173")
                         .allowedMethods("*")
                         .allowedHeaders("*")
                         .allowCredentials(true);

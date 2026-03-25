@@ -106,7 +106,7 @@ const TransactionDetails = () => {
           <Detail label="Transaction ID" value={txn.transactionId} />
           <Detail label="From" value={txn.sender.upiId} />
           <Detail label="To" value={txn.receiver.upiId} />
-          <Detail label="Bank" value={`${txn.sender.bankId} → ${txn.receiver.bankId}`} />
+          <Detail label="Bank" value={`${txn.sender.bankName} → ${txn.receiver.bankName}`} />
           <Detail
             label="Date"
             value={new Date(txn.completedAt).toLocaleString()}

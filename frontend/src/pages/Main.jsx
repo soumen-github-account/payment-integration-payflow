@@ -7,6 +7,7 @@ import PeopleKnow from '../components/PeopleKnow';
 import Footer from '../components/Footer';
 import { NavLink } from 'react-router-dom';
 import MobileNavbar from '../components/MobileNavbar';
+import logo from '../assets/logo.png';
 
 const Main = () => {
   return (
@@ -34,20 +35,22 @@ const Main = () => {
             for all recharges & monthly bills
           </p>
 
+          <NavLink to={"/pay-mobile"}>
           <button className='rounded-md px-4 py-1 bg-gray-50 text-neutral-800 font-medium cursor-pointer mt-4 border-2 border-gray-300 flex items-center justify-center gap-2'>
             <p>Pay Now</p>
             <MdKeyboardDoubleArrowRight />
           </button>
+          </NavLink>
         </div>
       </header>
 
       {/* Navbar */}
-      <nav className='absolute top-0 left-0 w-full z-20 px-4 pt-1 flex items-center justify-between'>
+      <nav className='absolute top-2 left-0 w-full z-20 px-4 pt-1 flex items-center justify-between'>
         <NavLink to={'/profile'} className='flex flex-col bg-gray-50 items-center justify-center w-10 h-10 rounded-full border-2 border-gray-300 cursor-pointer'>
           <User className='text-[22px]' />
           <img src={assets.upi_icon} alt="" className='w-6' />
         </NavLink>
-        <img src={assets.logo} alt="" className='w-30' />
+        <img src={logo} alt="" className='w-30' />
       </nav>
       <div className="absolute top-70 w-full h-[200px] inset-0 bg-gradient-to-b from-teal-800 to-black blur-3xl"></div>
       {/* Mid Section */}

@@ -9,6 +9,7 @@ import in.payflow.payflowAPI.entity.Account;
 import in.payflow.payflowAPI.entity.Bank;
 import in.payflow.payflowAPI.entity.Party;
 import in.payflow.payflowAPI.entity.Transaction;
+import in.payflow.payflowAPI.entity.UpiProfile;
 import in.payflow.payflowAPI.repository.BankRepository;
 import in.payflow.payflowAPI.repository.TransactionRepository;
 
@@ -29,6 +30,17 @@ public class PaymentService {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	private String getActiveUpiId(Account account) {
+	    if (account.getUpiProfiles() == null) return null;
+
+	    for (UpiProfile upi : account.getUpiProfiles()) {
+	        if (upi.isActive()) {
+	            return upi.getUpiId();
+	        }
+	    }
+	    return null; // no active UPI
+	}
 	
 	public String transferMoney(TransferRequest request) {
 		Account sender = null;
@@ -100,11 +112,15 @@ public class PaymentService {
         senderParty.setName(sender.getName());
         senderParty.setAccountNumber(sender.getAccountNumber());
         senderParty.setMobileNumber(sender.getMobileNumber());
+        senderParty.setBankName(senderBank.getBankName());
+        senderParty.setUpiId(getActiveUpiId(sender));
         
         Party receiverParty = new Party();
         receiverParty.setName(receiver.getName());
         receiverParty.setAccountNumber(receiver.getAccountNumber());
         receiverParty.setMobileNumber(receiver.getMobileNumber());
+        receiverParty.setBankName(receiverBank.getBankName());
+        receiverParty.setUpiId(getActiveUpiId(sender));
         
         txn.setSender(senderParty);
         txn.setReceiver(receiverParty);

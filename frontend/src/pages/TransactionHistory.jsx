@@ -6,6 +6,7 @@ import { getTransactionType } from "../utils/transactionType";
 import { user_data } from "../assets/user_data";
 import { AppContext } from "../contexts/AppContext";
 import TransactionSkeleton from "../components/TransactionSkeleton";
+import MobileNavbar from "../components/MobileNavbar";
 
 const TransactionHistory = () => {
   const {getAllTransactions, transactions, user, getTransactionsLoading} = useContext(AppContext)
@@ -16,7 +17,7 @@ const TransactionHistory = () => {
   }, [])
   if(getTransactionsLoading) return <TransactionSkeleton />
   return (
-    <div className="min-h-screen w-full bg-black text-white p-4">
+    <div className="min-h-screen w-full bg-black text-white p-4 pb-30">
       <nav className="flex items-center mb-6 gap-3">
         <NavLink to={-1}>
           <GoArrowLeft className="text-2xl cursor-pointer" />
@@ -38,18 +39,24 @@ const TransactionHistory = () => {
               }
               className="p-4 bg-zinc-900 rounded-xl flex justify-between cursor-pointer active:scale-[0.98]"
             >
-              <div>
-                <p className="font-medium">
-                  {type === "DEBIT"
-                    ? `Paid to ${txn.receiver.upiId}`
-                    : `Received from ${txn.sender.upiId}`}
-                </p>
+              <div className="flex items-center gap-4">
+                <img
+                  src={`https://ui-avatars.com/api/?name=${txn.receiver.name}`}
+                  className="w-10 h-10 rounded-full"
+                  alt={txn.receiver.name}
+                />
+                <div>
+                  <p className="font-medium">
+                    {type === "DEBIT"
+                      ? `Paid to ${txn.receiver.name}`
+                      : `Received from ${txn.sender.name}`}
+                  </p>
 
-                <p className="text-sm text-gray-400">
-                  {new Date(txn.initiatedAt).toLocaleString()}
-                </p>
+                  <p className="text-sm text-gray-400">
+                    {new Date(txn.initiatedAt).toLocaleString()}
+                  </p>
+                </div>
               </div>
-
               <div className="text-right">
                 <p
                   className={`font-semibold ${
@@ -66,6 +73,7 @@ const TransactionHistory = () => {
           );
         })}
       </div>
+      <MobileNavbar />
     </div>
   );
 };
